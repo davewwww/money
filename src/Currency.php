@@ -88,7 +88,16 @@ final class Currency
      */
     public static function of($currencyCode) : Currency
     {
-        return ISOCurrencyProvider::getInstance()->getCurrency($currencyCode);
+        try {
+            $currency = ISOCurrencyProvider::getInstance()->getCurrency($currencyCode);
+        }
+        catch (UnknownCurrencyException $e) {
+            if(null === $currency = CustomCurrencyProvider::getCurrency($currencyCode)) {
+                throw $e;
+            }
+        }
+
+        return $currency;
     }
 
     /**
